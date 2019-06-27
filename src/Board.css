@@ -1,0 +1,10 @@
+.game-board{
+    display: flex;
+    flex-wrap: wrap;
+    width: 78%;
+    margin: 0 auto;
+}
+
+h1{
+    text-align: center;
+}

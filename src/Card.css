@@ -1,0 +1,18 @@
+.card{
+    width: 68px;
+    border: 1px solid black;
+    border-radius: 8px;
+    padding: 30px 12px;
+    flex-basis: 29%;
+    flex: 25%;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.card.down img{
+    opacity: 0;
+}
+
+.card img{
+    width: 100%;
+}
