@@ -10,9 +10,31 @@
 }
 
 .card.down img{
-    opacity: 0;
+    visibility: hidden;
+    transition: all 0.5s linear;
+}
+
+.card.down {
+    animation: 1s turnDown linear;
+
+}
+
+.card.up{
+    animation: 0.8s turnUp linear;
 }
 
 .card img{
     width: 100%;
+}
+
+@keyframes turnUp {
+    0%{
+        transform: rotateY(90deg);
+    }
+}
+
+@keyframes turnDown {
+    50%{
+        transform: rotateY(90deg);
+    }
 }
