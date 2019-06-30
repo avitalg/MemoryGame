@@ -1,10 +1,18 @@
-.game-board{
+.game-board {
     display: flex;
     flex-wrap: wrap;
-    width: 78%;
+    width: 80%;
+    max-width: 500px;
     margin: 0 auto;
 }
 
-h1{
+h1 {
     text-align: center;
+}
+
+.good-job{
+    color: red;
+    font-size: 30px;
+    text-align: center;
+    margin: 10px;
 }

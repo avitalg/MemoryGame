@@ -1,43 +1,85 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Board.css';
 import Card from './Card';
 
 function GameBoard() {
-    let [cards, setCards] = useState([{img:"flower", side:"down"}, 
-    {img:"flower", side:"down"}, 
-    {img:"flower2", side:"down"}, 
-    {img:"flower2", side:"down"}, 
-    {img:"flower3", side:"down"}, 
-    {img:"flower3", side:"down"}]);
+    const [cards, setCards] = useState([{ img: "flower", side: "down", found: false },
+    { img: "flower", side: "down", found: false },
+    { img: "flower2", side: "down", found: false },
+    { img: "flower2", side: "down", found: false },
+    { img: "flower3", side: "down", found: false },
+    { img: "flower3", side: "down", found: false }]);
+    const [success, setSuccess] = useState(false);
+    const [finished, setFinished] = useState(false);
+    const [timeo, setTimeo] = useState(false);
 
-    let shuffle = (arr) => {
-        for (let i = arr.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [arr[i], arr[j]] = [arr[j], arr[i]];
+    useEffect(() => {
+        cleanStorage();
+        let shuffle = (arr) => {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
         }
-        return arr;
-    }
-    shuffle(cards);
+        setCards(shuffle([...cards]));
+    }, []);
 
-    let checkCard = (name, key, side) => {
-        if(localStorage.getItem("selectedKey") == key){
+    useEffect(()=>{
+        setFinished(cards.length === cards.filter(item=>item.found==true).length);
+    }, [cards]);
+
+    
+    let cleanStorage = () =>{
+        localStorage.setItem("selected", "");
+        localStorage.setItem("selectedKey", "");
+    }
+
+    let checkCard = (name, key, found) => {
+        let newCards = [...cards];
+        if (localStorage.getItem("selectedKey") && localStorage.getItem("selectedKey") == key || found || timeo) {
             return;
         }
-        if(!localStorage.getItem("selected")){
+
+        //set first selection to the localstorage
+        if (!localStorage.getItem("selected")) {
             localStorage.setItem("selected", name);
             localStorage.setItem("selectedKey", key);
-            return;
-        }
-        if (localStorage.getItem("selected") && localStorage.getItem("selected") !== name) {
-            localStorage.setItem("selected", "");
-            console.log(false);
+            newCards[key].side = "up";
+            setCards(newCards);
             return;
         }
 
-        if(localStorage.getItem("selected") === name){
+        if (newCards[key].side == "down" && newCards[localStorage.getItem("selectedKey")].side == "up") {
+            newCards[key].side = "up";
+            setCards(newCards);
+        }
+
+        //the second card doesn't match the first card
+        if (localStorage.getItem("selected") && localStorage.getItem("selected") !== name) {
+            setTimeo(true);
+            setTimeout(() => {
+                newCards[key].side = "down";
+                newCards[localStorage.getItem("selectedKey")].side = "down";
+                cleanStorage();
+                setCards([...newCards]);
+                setTimeo(false);
+                console.log(false);
+            }, 1000);
+            return;
+        }
+
+        if (localStorage.getItem("selected") === name) {
             console.log(true);
-            localStorage.setItem("selected", "");
-            localStorage.setItem("selectedKey", "");
+            setSuccess(true);
+            setTimeo(true);
+            setTimeout(() => {
+                [newCards[key].found, newCards[localStorage.getItem("selectedKey")].found] = [true, true];
+                cleanStorage();
+                setCards([...newCards]);
+                setSuccess(false);
+                setTimeo(false);
+            }, 1000);
             return;
         }
     }
@@ -49,9 +91,12 @@ function GameBoard() {
             </h1>
             <div className="game-board">
                 {cards.map((item, index) =>
-                    <Card {...item} sidekey={index} index={index} click={checkCard} />
+                    <Card {...item} key={index} index={index} click={checkCard} />
                 )}
             </div>
+            {(success)? <div className="good-job">GOOD JOB!</div>:null}
+            {(finished)? <div className="good-job">GAME OVER</div>:null}
+
         </React.Fragment>
     );
 }
