@@ -25,37 +25,38 @@ function GameBoard() {
         setCards(shuffle([...cards]));
     }, []);
 
-    useEffect(()=>{
-        setFinished(cards.length === cards.filter(item=>item.found==true).length);
+    useEffect(() => {
+        setFinished(cards.length === cards.filter(item => item.found == true).length);
     }, [cards]);
 
-    
-    let cleanStorage = () =>{
+
+    let cleanStorage = () => {
         localStorage.setItem("selected", "");
         localStorage.setItem("selectedKey", "");
     }
 
-    let checkCard = (name, key, found) => {
-        let newCards = [...cards];
-        if (localStorage.getItem("selectedKey") && localStorage.getItem("selectedKey") == key || found || timeo) {
-            return;
-        }
-
-        //set first selection to the localstorage
+    //set first selection to the localstorage
+    let firstSelected = (name, key, newCards) => {
         if (!localStorage.getItem("selected")) {
             localStorage.setItem("selected", name);
             localStorage.setItem("selectedKey", key);
             newCards[key].side = "up";
             setCards(newCards);
-            return;
+            return true;
         }
+        return false;
+    }
 
+    // open the second card that was chosen
+    let showSecondSelection = (key, newCards) => {
         if (newCards[key].side == "down" && newCards[localStorage.getItem("selectedKey")].side == "up") {
             newCards[key].side = "up";
             setCards(newCards);
         }
+    }
 
-        //the second card doesn't match the first card
+    //if the second card doesn't match the first card - reset properties
+    let dontMatch = (name, key, newCards) => {
         if (localStorage.getItem("selected") && localStorage.getItem("selected") !== name) {
             setTimeo(true);
             setTimeout(() => {
@@ -64,13 +65,15 @@ function GameBoard() {
                 cleanStorage();
                 setCards([...newCards]);
                 setTimeo(false);
-                console.log(false);
             }, 1000);
-            return;
+            return true;
         }
+        return false;
+    }
 
+    //if we found a match - save it
+    let match = (name, key, newCards) => {
         if (localStorage.getItem("selected") === name) {
-            console.log(true);
             setSuccess(true);
             setTimeo(true);
             setTimeout(() => {
@@ -80,8 +83,19 @@ function GameBoard() {
                 setSuccess(false);
                 setTimeo(false);
             }, 1000);
+        }
+    }
+
+    let checkCard = (name, key, found) => {
+        let newCards = [...cards];
+        if (localStorage.getItem("selectedKey") && localStorage.getItem("selectedKey") == key || found || timeo) {
             return;
         }
+
+        if (firstSelected(name, key, newCards)) return;
+        showSecondSelection(key, newCards);
+        if (dontMatch(name, key, newCards)) return;
+        match(name, key, newCards);
     }
 
     return (
@@ -94,8 +108,8 @@ function GameBoard() {
                     <Card {...item} key={index} index={index} click={checkCard} />
                 )}
             </div>
-            {(success)? <div className="good-job">GOOD JOB!</div>:null}
-            {(finished)? <div className="good-job">GAME OVER</div>:null}
+            {(success) ? <div className="good-job">GOOD JOB!</div> : null}
+            {(finished) ? <div className="good-job">GAME OVER</div> : null}
 
         </React.Fragment>
     );
