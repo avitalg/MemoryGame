@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import './Board.css';
-import Card from './Card';
+import '../css/Board.css';
+import Card from '../js/Card';
 
 function GameBoard() {
     const [cards, setCards] = useState([{ img: "flower", side: "down", found: false },

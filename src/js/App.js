@@ -1,6 +1,5 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import '../css/App.css';
 import GameBoard from './Board';
 function App() {
   return (
