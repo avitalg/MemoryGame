@@ -120,7 +120,7 @@ function GameBoard() {
                     <Card {...item} key={index} index={index} click={checkCard} />
                 )}
             </div>
-            {feedback()};
+            {feedback()}
         </React.Fragment>
     );
 }
