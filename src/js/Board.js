@@ -98,6 +98,18 @@ function GameBoard() {
         match(name, key, newCards);
     }
 
+    let feedback = () => {
+        let text = "";
+        if (success) {
+            text = "GOOD JOB!";
+        }
+        if (finished) {
+            text = "GAME OVER";
+        }
+
+        return <div className="good-job">{text}</div>;
+    }
+
     return (
         <React.Fragment>
             <h1>
@@ -108,9 +120,7 @@ function GameBoard() {
                     <Card {...item} key={index} index={index} click={checkCard} />
                 )}
             </div>
-            {(success) ? <div className="good-job">GOOD JOB!</div> : null}
-            {(finished) ? <div className="good-job">GAME OVER</div> : null}
-
+            {feedback()};
         </React.Fragment>
     );
 }
