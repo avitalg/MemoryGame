@@ -3,12 +3,14 @@ import '../css/Board.css';
 import Card from '../js/Card';
 
 function GameBoard() {
-    const [cards, setCards] = useState([{ img: "flower", side: "down", found: false },
-    { img: "flower", side: "down", found: false },
-    { img: "flower2", side: "down", found: false },
-    { img: "flower2", side: "down", found: false },
-    { img: "flower3", side: "down", found: false },
-    { img: "flower3", side: "down", found: false }]);
+    const [cards, setCards] = useState([
+        { img: "flower", side: "down", found: false },
+        { img: "flower", side: "down", found: false },
+        { img: "flower2", side: "down", found: false },
+        { img: "flower2", side: "down", found: false },
+        { img: "flower3", side: "down", found: false },
+        { img: "flower3", side: "down", found: false }
+    ]);
     const [success, setSuccess] = useState(false);
     const [finished, setFinished] = useState(false);
     const [timeo, setTimeo] = useState(false);
@@ -26,7 +28,7 @@ function GameBoard() {
     }, []);
 
     useEffect(() => {
-        setFinished(cards.length === cards.filter(item => item.found == true).length);
+        setFinished(cards.length === cards.filter(item => item.found === true).length);
     }, [cards]);
 
 
@@ -49,7 +51,7 @@ function GameBoard() {
 
     // open the second card that was chosen
     let showSecondSelection = (key, newCards) => {
-        if (newCards[key].side == "down" && newCards[localStorage.getItem("selectedKey")].side == "up") {
+        if (newCards[key].side === "down" && newCards[localStorage.getItem("selectedKey")].side === "up") {
             newCards[key].side = "up";
             setCards(newCards);
         }
